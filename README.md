@@ -1,1 +1,3 @@
-# Deep_Neural_Net_with_Matlab_from_scratch
+# Deep Neural Network with Matlab from scratch for regression tasks.
+
+To be filled soon.

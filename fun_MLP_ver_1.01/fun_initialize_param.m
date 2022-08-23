@@ -40,7 +40,7 @@ efun = @(x, y) sqrt(6)./(sqrt(x + y));
 % the init apmlitudes for each layer
 epsilon_init = repelem(bsxfun(efun, layers(1:end-1), layers(2:end)), nel);
 % the init weights for each neuron
-vec_W = (2*rand(sum(nel), 1) - 1).*epsilon_init';
+vec_W = (2*rand(sum(nel), 1) - 1).*epsilon_init'*.1;
 W = fun_Vector2CellMat(vec_W,ind_n_layers);
 
 
@@ -50,7 +50,7 @@ efun = @(x, y) sqrt(6)./(sqrt(x + y));
 % the init apmlitudes for each layer
 epsilon_init = repelem(bsxfun(efun, layers(1:end-1), layers(2:end)), nel);
 % the init weights for each neuron
-vec_b = (2*rand(sum(nel), 1) - 1).*epsilon_init';
+vec_b = (2*rand(sum(nel), 1) - 1).*epsilon_init'*.1;
 b = fun_Vector2CellVec(vec_b,ind_n_layers);
 
 

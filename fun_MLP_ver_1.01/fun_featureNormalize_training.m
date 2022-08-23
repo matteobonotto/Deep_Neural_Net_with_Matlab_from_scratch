@@ -1,34 +1,48 @@
-function [X,T] = fun_featureNormalize_training(x_dataset,t_dataset)
+function [X,T] = fun_featureNormalize_training(x_dataset,t_dataset,options)
+
+if ~isfield(options, 'Normalize_input')
+    options.Normalize_input = false;
+end
+if ~isfield(options, 'Normalize_output')
+    options.Normalize_output = false;
+end
+
+
 
 %%% Normalize training dataset
+if options.Normalize_input
+    temp_X = x_dataset.';
+    X_norm = zeros(size(temp_X));
+    X_norm(:,1) = ones(size(temp_X,1),1);
+    [X_norm(:,1:end), nnMu, nnSigma] = featureNormalize(temp_X(:,1:end));
+    x_dataset = X_norm.';
 
-temp_X = x_dataset.';
-X_norm = zeros(size(temp_X));
-X_norm(:,1) = ones(size(temp_X,1),1);
-[X_norm(:,1:end), nnMu, nnSigma] = featureNormalize(temp_X(:,1:end));
-x_dataset = X_norm.';
-
-X.data = x_dataset;
-X.nnMu = nnMu;
-X.nnSigma = nnSigma;
-% X.nnMu = 0;
-% X.nnSigma = 1;
+    X.data = x_dataset;
+    X.nnMu = nnMu;
+    X.nnSigma = nnSigma;
+else
+    X.data = x_dataset;
+    X.nnMu = 0;
+    X.nnSigma = 1;
+end
 
 
 %%% Normalize target dataset
+if options.Normalize_output
+    temp_X = t_dataset.';
+    X_norm = zeros(size(temp_X));
+    X_norm(:,1) = ones(size(temp_X,1),1);
+    [X_norm(:,1:end), nnMu, nnSigma] = featureNormalize(temp_X(:,1:end));
+    t_dataset = X_norm.';
 
-temp_X = t_dataset.';
-X_norm = zeros(size(temp_X));
-X_norm(:,1) = ones(size(temp_X,1),1);
-[X_norm(:,1:end), nnMu, nnSigma] = featureNormalize(temp_X(:,1:end));
-t_dataset = X_norm.';
-
-T.data = t_dataset;
-T.nnMu = nnMu;
-T.nnSigma = nnSigma;
-% % T.nnMu = 0;
-% % T.nnSigma = 1;
-
+    T.data = t_dataset;
+    T.nnMu = nnMu;
+    T.nnSigma = nnSigma;
+else
+    T.data = t_dataset;
+    T.nnMu = 0;
+    T.nnSigma = 1;
+end
 
 
 end

@@ -3,7 +3,7 @@ function net = fun_initialize_MLP(net,options)
 
 
 %% Normalize datasets
-[net.X,net.T] = fun_featureNormalize_training(net.x_dataset_train,net.t_dataset_train);
+[net.X,net.T] = fun_featureNormalize_training(net.x_dataset_train,net.t_dataset_train,options);
 
 
 %%

@@ -15,31 +15,43 @@ dataset = load('housing_data.txt');
 X_train = dataset(:,1:end-1).';
 y_train = dataset(:,end).';
 
-%% (R,Z) centroid
+options.Normalize_input = true;
+options.Normalize_output = true;
+[X,T] = fun_featureNormalize_training(X_train,y_train,options);
+X_train = X.data;
+y_train = T.data;
 
-options_MLP.nw_hidden_layers = 50;
-options_MLP.f_activation = 'tanh'; % Iteration  3900 | Cost: 1.068729e-05; error 1.0e-04*[0.7409    0.4863]
-% % options_MLP.f_activation = 'logistic'; % Iteration  9400 | Cost: 9.976563e-06 ; error 1.0e-03*[0.4851    0.7681]
-% % options_MLP.f_activation = 'relu'; % fails
-% options_MLP.f_activation = 'gelu'; % Iteration  4000 | Cost: 1.016249e-05 ; error 1.0e-03*[-0.0857    0.1362]
-% % options_MLP.f_activation = 'sgelu'; %  ; fails 
+% % [X_train, X_test, y_train, y_test] = ...
+% %     fun_train_test_split(X_train,y_train,.8);
 
-% % options_MLP.f_activation = 'SoftPlus'; % Iteration  4000 | Cost: 1.016249e-05 ; error 1.0e-03*[-0.0857    0.1362]
-% % options_MLP.f_activation = 'BentIdentity'; % Iteration  4000 | Cost: 1.016249e-05 ; error 1.0e-03*[-0.0857    0.1362]
-% % options_MLP.f_activation = 'ISRLU'; % Iteration  4000 | Cost: 1.016249e-05 ; error 1.0e-03*[-0.0857    0.1362]
-options_MLP.threshold = 1e-5;
-options_MLP.maxIter = 10000;
+
+%% Train network
+options_MLP.nw_hidden_layers = [50];
+options_MLP.f_activation = 'tanh'; 
+options_MLP.threshold = 1e-3;
+options_MLP.maxIter = 1000;
+options_MLP.train_test_split_ratio = .8;
+
+options_MLP.Normalize_input = false;
+options_MLP.Normalize_output = false;
 
 tic
 net = fun_main_MLP(X_train,y_train,options_MLP);
 toc
 %%% predict
 
-figure
+figure    
 semilogy(1:numel(net.costArray),net.costArray)
+grid on; hold on;
+xlabel('Iterations')
+ylabel('Cost')
 
+figure
+plot(net.t_dataset_train, fun_predict_MLP(net,net.x_dataset_train), 'o')
+axis equal
 
-
+fprintf('The R^2 for is: %f\n', ...
+    rsquare(fun_predict_MLP(net,net.x_dataset_train),net.t_dataset_train))
 
 
 
